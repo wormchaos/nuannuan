@@ -46,7 +46,7 @@
     <select id="findItems" resultMap="itemMap">
         <![CDATA[
             SELECT id,num,name,level,huali,jianyue,youya,huopo,chengshu,keai,xinggan,qingchun,qingliang,baonuan,label1,label2,label3,getfrom,type
-             FROM items LIMIT 0, #{size}
+             FROM items LIMIT #{pageStart}, #{pageSize}
         ]]>
     </select>
 

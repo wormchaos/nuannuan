@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface ItemMapper {
 
-    List<ItemEntity> findItems(@Param("size") Integer size);
+    List<ItemEntity> findItems(@Param("pageStart") Integer pageStart, @Param("pageSize") Integer pageSize);
 
     void createItem(ItemEntity itemEntity);
 }

@@ -18,8 +18,9 @@ public class ItemServiceImpl implements ItemService {
     ItemMapper itemMapper;
 
     @Override
-    public List<ItemEntity> findItems(Integer size) {
-        return itemMapper.findItems(size);
+    public List<ItemEntity> findItems(Integer pageIndex, Integer pageSize) {
+        Integer pageStart = ( pageIndex - 1) * pageSize;
+        return itemMapper.findItems(pageStart, pageSize);
     }
 
     @Override

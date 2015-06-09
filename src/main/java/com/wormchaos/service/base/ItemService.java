@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface ItemService {
 
-    List<ItemEntity> findItems(Integer size);
+    List<ItemEntity> findItems(Integer pageIndex, Integer pageSize);
 
     void createItem(ItemEntity itemEntity);
 
