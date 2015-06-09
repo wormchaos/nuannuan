@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wormchaos.dao.persistence.ItemMapper">
+    <resultMap id="itemMap" type="com.wormchaos.dao.entity.ItemEntity">
+        <result column="id" javaType="Integer" property="id"></result>
+        <result column="num" javaType="Integer" property="num"></result>
+        <result column="name" javaType="String" property="name"></result>
+        <result column="level" javaType="Integer" property="level"></result>
+        <result column="huali" javaType="Integer" property="huali"></result>
+        <result column="youya" javaType="Integer" property="youya"></result>
+        <result column="huopo" javaType="Integer" property="huopo"></result>
+        <result column="chengshu" javaType="Integer" property="chengshu"></result>
+        <result column="keai" javaType="Integer" property="keai"></result>
+        <result column="xinggan" javaType="Integer" property="xinggan"></result>
+        <result column="qingchun" javaType="Integer" property="qingchun"></result>
+        <result column="qingliang" javaType="Integer" property="qingliang"></result>
+        <result column="baonuan" javaType="Integer" property="baonuan"></result>
+        <result column="label1" javaType="String" property="label1"></result>
+        <result column="label2" javaType="String" property="label2"></result>
+        <result column="label3" javaType="String" property="label3"></result>
+        <result column="getfrom" javaType="String" property="getfrom"></result>
+        <result column="type" javaType="Integer" property="type"></result>
+    </resultMap>
+
+    <parameterMap  id="itemMap" type="com.wormchaos.dao.entity.ItemEntity">
+        <parameter property="id" />
+        <parameter property="num" />
+        <parameter property="name" />
+        <parameter property="level" />
+        <parameter property="huali" />
+        <parameter property="youya" />
+        <parameter property="huopo" />
+        <parameter property="chengshu" />
+        <parameter property="keai" />
+        <parameter property="xinggan" />
+        <parameter property="qingchun" />
+        <parameter property="qingliang" />
+        <parameter property="baonuan" />
+        <parameter property="label1" />
+        <parameter property="label2" />
+        <parameter property="label3" />
+        <parameter property="getfrom" />
+        <parameter property="type" />
+    </parameterMap>
+
+    <select id="findItems" resultMap="itemMap">
+        <![CDATA[
+            SELECT id,num,name,level,huali,jianyue,youya,huopo,chengshu,keai,xinggan,qingchun,qingliang,baonuan,label1,label2,label3,getfrom,type
+             FROM items LIMIT 0, #{size}
+        ]]>
+    </select>
+
+    <insert id="createItem" parameterMap="itemMap">
+        <![CDATA[
+              INSERT INTO items
+              (num,name,level,huali,jianyue,youya,huopo,chengshu,keai,xinggan,qingchun,qingliang,baonuan,label1,label2,label3,getfrom,type)
+              VALUES
+              ( #{num},#{name},#{level},#{huali},#{jianyue},#{youya},#{huopo},#{chengshu},#{keai},
+              #{xinggan},#{qingchun},#{qingliang},#{baonuan},#{label1},#{label2},#{label3},#{getfrom},#{type})
+        ]]>
+    </insert>
+
+</mapper>
