@@ -34,7 +34,7 @@ public class TestController {
 //        }
 //        readExcel();
         // test
-        List<ItemEntity> itemList = itemService.findItems(1, 10);
+        List<ItemEntity> itemList = itemService.findItems(1, 1, 10);
         ModelAndView model = new ModelAndView("decoration");
         model.addObject("itemList",itemList);
         return model;

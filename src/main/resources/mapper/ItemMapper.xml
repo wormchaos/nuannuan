@@ -21,6 +21,15 @@
         <result column="getfrom" javaType="String" property="getfrom"></result>
         <result column="type" javaType="Integer" property="type"></result>
     </resultMap>
+    <resultMap id="compMap" type="com.wormchaos.dao.entity.CompBean">
+        <result column="num" javaType="Integer" property="num"></result>
+        <result column="level" javaType="Integer" property="level"></result>
+        <result column="good1" javaType="Integer" property="good1"></result>
+        <result column="bad1" javaType="Integer" property="bad1"></result>
+        <result column="good2" javaType="Integer" property="good2"></result>
+        <result column="bad2" javaType="Integer" property="bad2"></result>
+        <result column="type" javaType="Integer" property="type"></result>
+    </resultMap>
 
     <parameterMap  id="itemMap" type="com.wormchaos.dao.entity.ItemEntity">
         <parameter property="id" />
@@ -46,7 +55,26 @@
     <select id="findItems" resultMap="itemMap">
         <![CDATA[
             SELECT id,num,name,level,huali,jianyue,youya,huopo,chengshu,keai,xinggan,qingchun,qingliang,baonuan,label1,label2,label3,getfrom,type
-             FROM items LIMIT #{pageStart}, #{pageSize}
+             FROM items WHERE type = #{type} ORDER BY num LIMIT #{pageStart}, #{pageSize}
+        ]]>
+    </select>
+
+    <select id="findItem" resultMap="itemMap">
+        <![CDATA[
+            SELECT id,num,name,level,huali,jianyue,youya,huopo,chengshu,keai,xinggan,qingchun,qingliang,baonuan,label1,label2,label3,getfrom,type
+             FROM items WHERE type = #{type} AND num = #{num}
+        ]]>
+    </select>
+
+    <select id="findNeedItems" resultMap="compMap">
+        <![CDATA[
+            SELECT
+            num,
+            level,
+                ${param1} as good1,
+                ${param2} as good2,
+            type
+             FROM items WHERE type = #{type}
         ]]>
     </select>
 

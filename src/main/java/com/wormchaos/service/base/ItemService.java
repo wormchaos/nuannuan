@@ -9,8 +9,10 @@ import java.util.List;
  */
 public interface ItemService {
 
-    List<ItemEntity> findItems(Integer pageIndex, Integer pageSize);
+    List<ItemEntity> findItems(Integer type, Integer pageIndex, Integer pageSize);
 
     void createItem(ItemEntity itemEntity);
+
+    List<ItemEntity> calculateDecoration(String param1, String param2);
 
 }
