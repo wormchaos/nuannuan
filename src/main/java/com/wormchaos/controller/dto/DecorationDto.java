@@ -1,4 +1,4 @@
-package com.wormchaos.service.dto;
+package com.wormchaos.controller.dto;
 
 import java.io.Serializable;
 

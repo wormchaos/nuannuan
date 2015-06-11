@@ -3,7 +3,7 @@ package com.wormchaos.controller;
 import com.wormchaos.common.DecorationConstant;
 import com.wormchaos.dao.entity.ItemEntity;
 import com.wormchaos.service.base.ItemService;
-import com.wormchaos.service.dto.DecorationDto;
+import com.wormchaos.controller.dto.DecorationDto;
 import jxl.read.biff.BiffException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

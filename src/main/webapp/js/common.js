@@ -28,6 +28,11 @@ $(document).ready(function() {
         }
         getDecorationList(param1, param2);
     });
+
+
+    $("#upload").live("click", function(){
+        uploadData();
+    });
 });
 
 //获取数据
@@ -109,6 +114,20 @@ function getDecorationList(param1, param2) {
         },
         error: function (a, b, c) {
             console.log("error");
+        }
+    });
+}
+
+function uploadData(){
+    $.ajaxFileUpload({
+        url: project_name + "/cloth/ajax/uploadData",            //需要链接到服务器地址
+        secureuri:false,
+        fileElementId:'xlsUpload',                        //文件选择框的id属性
+        dataType : 'json',
+        success: function(data, status){
+
+        },error: function (data, status, e){
+            alert('上传图片异常');
         }
     });
 }
