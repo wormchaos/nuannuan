@@ -21,7 +21,7 @@ $(document).ready(function() {
 
     $("#search_decoration").live("click", function(){
         var param1 = $("#param1").val();
-        var param2 = $("#param1").val();
+        var param2 = $("#param2").val();
         if(param1 =='' || param2 ==''){
             alert("不能为空");
             return;
@@ -87,7 +87,9 @@ function getDecorationList(param1, param2) {
         success: function (result) {
             $("#item_table tr.item_content").html('');
             for (var i = 0; i < result.length; i++) {
-                var content = "<tr class=‘item_content’><td>" + result[i].name + "</td>";
+                var content = "<tr class='item_content'>"
+                content += "<td>" + result[i].type + "</td>";
+                content += "<td>" + result[i].name + "</td>";
                 content += "<td>" + result[i].num + "</td>";
                 content += "<td>" + result[i].level + "</td>";
                 content += "<td>" + result[i].huali + "</td>";
@@ -102,7 +104,7 @@ function getDecorationList(param1, param2) {
                 content += "<td>" + result[i].label1 + "</td>";
                 content += "<td>" + result[i].label2 + "</td>";
                 content += "<td>" + result[i].getfrom + "</td></tr>";
-                $("#item_table tr").after(content);
+                $("#item_table tr").eq(i).after(content);
             }
         },
         error: function (a, b, c) {

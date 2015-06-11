@@ -45,6 +45,7 @@
 <div>
     <table id="item_table">
         <tr type = "1">
+            <th>类别</th>
             <th>名称</th>
             <th>No.</th>
             <th>心级</th>

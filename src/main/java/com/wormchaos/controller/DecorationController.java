@@ -1,8 +1,11 @@
 package com.wormchaos.controller;
 
+import com.wormchaos.common.DecorationConstant;
 import com.wormchaos.dao.entity.ItemEntity;
 import com.wormchaos.service.base.ItemService;
+import com.wormchaos.service.dto.DecorationDto;
 import jxl.read.biff.BiffException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -14,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,7 +59,7 @@ public class DecorationController {
 
     @RequestMapping("decorate")
     @ResponseBody
-    public List<ItemEntity> decorate(HttpServletRequest request, HttpServletResponse response,
+    public List<DecorationDto> decorate(HttpServletRequest request, HttpServletResponse response,
                                         @RequestParam(required = false, value = "param1") String param1,
                                         @RequestParam(required = false, value = "param2") String param2,
                                         @RequestParam(required = false, value = "label1") String label1,
@@ -65,7 +69,31 @@ public class DecorationController {
             //
         }
         List<ItemEntity> itemEntityList = itemService.calculateDecoration( param1, param2);
-        return itemEntityList;
+        List<DecorationDto> itemDtoList = covertFromItem(itemEntityList);
+        return itemDtoList;
     }
+
+    private List<DecorationDto> covertFromItem(List<ItemEntity> itemEntityList) {
+        List<DecorationDto> list = new ArrayList<DecorationDto>();
+        for(ItemEntity item : itemEntityList) {
+            DecorationDto dto = new DecorationDto();
+            BeanUtils.copyProperties(item, dto);
+            dto.setJianyue(DecorationConstant.levelMapping.get(item.getJianyue()));
+            dto.setHuali(DecorationConstant.levelMapping.get(item.getHuali()));
+            dto.setYouya(DecorationConstant.levelMapping.get(item.getYouya()));
+            dto.setHuopo(DecorationConstant.levelMapping.get(item.getHuopo()));
+            dto.setChengshu(DecorationConstant.levelMapping.get(item.getChengshu()));
+            dto.setKeai(DecorationConstant.levelMapping.get(item.getKeai()));
+            dto.setXinggan(DecorationConstant.levelMapping.get(item.getXinggan()));
+            dto.setQingchun(DecorationConstant.levelMapping.get(item.getQingchun()));
+            dto.setQingliang(DecorationConstant.levelMapping.get(item.getQingliang()));
+            dto.setBaonuan(DecorationConstant.levelMapping.get(item.getBaonuan()));
+            dto.setType(DecorationConstant.typeMapping.get(item.getType()));
+            list.add(dto);
+        }
+        return list;
+
+    }
+
 
 }

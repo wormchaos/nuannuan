@@ -33,7 +33,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemEntity> calculateDecoration(String param1, String param2) {
         List<ItemEntity> list = new ArrayList<ItemEntity>();
-        for(int type=0; type < 9; type++) {
+        for(int type=1; type < 9; type++) {
             List<CompBean> itemList = itemMapper.findNeedItems(type, param1, param2);
             if(null == itemList || itemList.size() == 0) {
                 continue;
@@ -43,8 +43,8 @@ public class ItemServiceImpl implements ItemService {
             for (CompBean compBean : itemList) {
                 if (max < compBean.getGood1() + compBean.getGood2() + compBean.getLevel()) {
                     max = compBean.getGood1() + compBean.getGood2() + compBean.getLevel();
+                    num = compBean.getNum();
                 }
-                num = compBean.getNum();
             }
             if (num  >= 0) {
                 ItemEntity itemEntity = itemMapper.findItem(type, num);
