@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wormchaos.dao.persistence.WardrobeMapper">
+    <resultMap id="map" type="com.wormchaos.dao.entity.Wardrobe">
+        <result column="userId" javaType="Integer" property="userId"></result>
+        <result column="clothId" javaType="Integer" property="clothId"></result>
+        <result column="delete" javaType="Integer" property="delete"></result>
+    </resultMap>
+
+    <parameterMap  id="map" type="com.wormchaos.dao.entity.Wardrobe">
+        <parameter property="userId" />
+        <parameter property="clothId" />
+        <parameter property="delete" />
+    </parameterMap>
+
+    <select id="findWardrobes" parameterType="java.lang.Integer"  resultMap="map">
+        <![CDATA[
+            SELECT userId, clothId, delete
+             FROM wardrobe WHERE userId = #{userId} AND delete = 0
+        ]]>
+    </select>
+
+    <insert id="createWardrobe" parameterMap="map">
+        <![CDATA[
+              INSERT INTO wardrobe
+              (userId, clothId)
+              VALUES
+              (#{userId}, #{clothId})
+        ]]>
+    </insert>
+</mapper>

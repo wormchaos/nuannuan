@@ -23,9 +23,37 @@ $(document).ready(function() {
         getDecorationList();
     });
 
-
     $("#upload").live("click", function(){
         uploadData();
+    });
+
+    $("#login").live("click", function(){
+        if ($("#username").val() == "") {
+            $(".error").html("请输入账号");
+            return;
+        }
+        if ($("#password").val() == "") {
+            $(".error").html("请输入密码");
+            return;
+        }
+        $(".result").hide();
+        $("#loginForm").submit();
+    });
+
+    $("#register_change").live("click", function(){
+        $("#loginForm #passwordConfirm").show();
+        $("#loginForm #register_change").hide();
+        $("#loginForm #login_change").show();
+        $("#loginForm #login").val("注册");
+        $("#loginForm").attr("action", "register");
+    });
+
+    $("#login_change").live("click", function(){
+        $("#loginForm #passwordConfirm").hide();
+        $("#loginForm #login_change").hide();
+        $("#loginForm #register_change").show();
+        $("#loginForm #register").val("登录");
+        $("#loginForm").attr("action", "login");
     });
 });
 

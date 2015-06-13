@@ -5,6 +5,8 @@ package com.wormchaos.common;
  */
 public class NnUtils {
 
+    public final static String SESSION_USER = "user";
+
     /**
      * 头发
      */
