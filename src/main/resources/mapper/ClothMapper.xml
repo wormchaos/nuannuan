@@ -47,7 +47,7 @@
     <select id="findCloths" resultMap="clothMap">
         <![CDATA[
             SELECT id,type,num,name,level,brief,elegance,lovely,pure,cool,label1,label2,label3,cloth_from
-             FROM cloth WHERE type = #{type} ORDER BY type , no LIMIT #{pageStart}, #{pageSize}
+             FROM cloth WHERE type = #{type} ORDER BY type , num LIMIT #{pageStart}, #{pageSize}
         ]]>
     </select>
 

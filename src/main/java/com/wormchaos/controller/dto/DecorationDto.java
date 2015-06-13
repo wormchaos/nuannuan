@@ -9,6 +9,24 @@ public class DecorationDto implements Serializable{
 
     private static final long serialVersionUID = -3216990902992486001L;
 
+    public DecorationDto() {
+        this.jianyue = "";
+        this.huali = "";
+        this.youya = "";
+        this.huopo = "";
+        this.chengshu = "";
+        this.keai = "";
+        this.xinggan = "";
+        this.qingchun = "";
+        this.qingliang = "";
+        this.baonuan = "";
+        this.label1 = "";
+        this.label2 = "";
+        this.label3 = "";
+        this.getfrom = "";
+        this.type = "";
+    }
+
     private int id;
 
     private int num;

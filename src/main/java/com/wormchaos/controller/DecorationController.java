@@ -1,14 +1,15 @@
 package com.wormchaos.controller;
 
 import com.wormchaos.common.DecorationConstant;
-import com.wormchaos.dao.entity.ItemEntity;
-import com.wormchaos.service.base.ItemService;
 import com.wormchaos.controller.dto.DecorationDto;
+import com.wormchaos.dao.entity.Cloth;
+import com.wormchaos.dao.entity.ItemEntity;
+import com.wormchaos.service.base.ClothService;
+import com.wormchaos.service.base.ItemService;
 import jxl.read.biff.BiffException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -29,6 +30,9 @@ public class DecorationController {
 
     @Autowired
     ItemService itemService;
+
+    @Autowired
+    ClothService clothService;
 
     @RequestMapping("main")
     public ModelAndView main(HttpServletRequest request, HttpServletResponse response,
@@ -60,16 +64,15 @@ public class DecorationController {
     @RequestMapping("decorate")
     @ResponseBody
     public List<DecorationDto> decorate(HttpServletRequest request, HttpServletResponse response,
-                                        @RequestParam(required = false, value = "param1") String param1,
-                                        @RequestParam(required = false, value = "param2") String param2,
+                                        @RequestParam(required = false, value = "brief") Integer brief,
+                                        @RequestParam(required = false, value = "elegance") Integer elegance,
+                                        @RequestParam(required = false, value = "lovely") Integer lovely,
+                                        @RequestParam(required = false, value = "pure") Integer pure,
+                                        @RequestParam(required = false, value = "cool") Integer cool,
                                         @RequestParam(required = false, value = "label1") String label1,
                                         @RequestParam(required = false, value = "label2") String label2 ) throws IOException, BiffException {
-        // TODO exception
-        if(StringUtils.isEmpty(param1) || StringUtils.isEmpty(param2) ){
-            //
-        }
-        List<ItemEntity> itemEntityList = itemService.calculateDecoration( param1, param2);
-        List<DecorationDto> itemDtoList = covertFromItem(itemEntityList);
+        List<Cloth> clothList = clothService.calculateDecoration(brief, elegance, lovely, pure, cool, null, null);
+        List<DecorationDto> itemDtoList = covertFromCloth(clothList);
         return itemDtoList;
     }
 
@@ -92,7 +95,42 @@ public class DecorationController {
             list.add(dto);
         }
         return list;
+    }
 
+    private List<DecorationDto> covertFromCloth(List<Cloth> clothList) {
+        List<DecorationDto> list = new ArrayList<DecorationDto>();
+        for(Cloth cloth : clothList) {
+            DecorationDto dto = new DecorationDto();
+            BeanUtils.copyProperties(cloth, dto);
+            if(cloth.getBrief() > 0) {
+                dto.setJianyue(DecorationConstant.levelMapping.get(cloth.getBrief()));
+            } else {
+                dto.setHuali(DecorationConstant.levelMapping.get(- cloth.getBrief()));
+            }
+            if(cloth.getElegance() > 0) {
+                dto.setYouya(DecorationConstant.levelMapping.get(cloth.getElegance()));
+            } else {
+                dto.setHuopo(DecorationConstant.levelMapping.get(- cloth.getElegance()));
+            }
+            if(cloth.getLovely() > 0) {
+                dto.setKeai(DecorationConstant.levelMapping.get(cloth.getLovely()));
+            } else {
+                dto.setChengshu(DecorationConstant.levelMapping.get(- cloth.getLovely()));
+            }
+            if(cloth.getPure() > 0) {
+                dto.setQingchun(DecorationConstant.levelMapping.get(cloth.getPure()));
+            } else {
+                dto.setXinggan(DecorationConstant.levelMapping.get(- cloth.getPure()));
+            }
+            if(cloth.getCool() > 0) {
+                dto.setQingliang(DecorationConstant.levelMapping.get(cloth.getCool()));
+            } else {
+                dto.setBaonuan(DecorationConstant.levelMapping.get(- cloth.getCool()));
+            }
+            dto.setType(DecorationConstant.typeMapping.get(cloth.getType()));
+            list.add(dto);
+        }
+        return list;
     }
 
 

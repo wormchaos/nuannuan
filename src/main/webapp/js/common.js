@@ -20,13 +20,7 @@ $(document).ready(function() {
     });
 
     $("#search_decoration").live("click", function(){
-        var param1 = $("#param1").val();
-        var param2 = $("#param2").val();
-        if(param1 =='' || param2 ==''){
-            alert("不能为空");
-            return;
-        }
-        getDecorationList(param1, param2);
+        getDecorationList();
     });
 
 
@@ -78,7 +72,16 @@ function getItemList(type, pageIndex, pageSize) {
 }
 
 //获取搭配结果
-function getDecorationList(param1, param2) {
+function getDecorationList() {
+    var brief = $("#brief").val();
+    var elegance = $("#elegance").val();
+    var lovely = $("#lovely").val();
+    var pure = $("#pure").val();
+    var cool = $("#cool").val();
+    if(brief == '0' && elegance =='0' && lovely =='0' && pure =='0' && cool =='0'){
+        alert("不能为空");
+        return;
+    }
     var url = project_name + "/decoration/decorate"
     $.ajax({
         type: "POST",
@@ -86,8 +89,11 @@ function getDecorationList(param1, param2) {
         contentType: "application/x-www-form-urlencoded",
         dataType: "json",
         data: {
-            param1: param1,
-            param2: param2
+            brief: brief,
+            elegance: elegance,
+            lovely: lovely,
+            pure: pure,
+            cool: cool
         },
         success: function (result) {
             $("#item_table tr.item_content").html('');
@@ -105,6 +111,7 @@ function getDecorationList(param1, param2) {
                 content += "<td>" + result[i].keai + "</td>";
                 content += "<td>" + result[i].xinggan + "</td>";
                 content += "<td>" + result[i].qingchun + "</td>";
+                content += "<td>" + result[i].qingliang + "</td>";
                 content += "<td>" + result[i].baonuan + "</td>";
                 content += "<td>" + result[i].label1 + "</td>";
                 content += "<td>" + result[i].label2 + "</td>";

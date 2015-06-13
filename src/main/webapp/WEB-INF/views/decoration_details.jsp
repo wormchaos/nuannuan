@@ -17,27 +17,30 @@
 <body>
 <div>
     <ul id="menu">
-        <select id="param1">
-            <option value="">属性一</option>
-            <option value="huali">华丽</option>
-            <option value="jianyue">简约</option>
-            <option value="youya">优雅</option>
-            <option value="huopo">活泼</option>
-            <option value="chengshu">成熟</option>
-            <option value="keai">可爱</option>
-            <option value="xinggan">性感</option>
-            <option value="qingchun">清纯</option>
+        <select id="brief">
+            <option value="1">简约</option>
+            <option value="-1">华丽</option>
+            <option value="0">无</option>
         </select>
-        <select id="param2">
-            <option value="">属性二</option>
-            <option value="huali">华丽</option>
-            <option value="jianyue">简约</option>
-            <option value="youya">优雅</option>
-            <option value="huopo">活泼</option>
-            <option value="chengshu">成熟</option>
-            <option value="keai">可爱</option>
-            <option value="xinggan">性感</option>
-            <option value="qingchun">清纯</option>
+        <select id="elegance">
+            <option value="1">优雅</option>
+            <option value="-1">活泼</option>
+            <option value="0">无</option>
+        </select>
+        <select id="lovely">
+            <option value="1">可爱</option>
+            <option value="-1">成熟</option>
+            <option value="0">无</option>
+        </select>
+        <select id="pure">
+            <option value="1">清纯</option>
+            <option value="-1">性感</option>
+            <option value="0">无</option>
+        </select>
+        <select id="cool">
+            <option value="1">清凉</option>
+            <option value="-1">保暖</option>
+            <option value="0">无</option>
         </select>
         <input id="search_decoration" type="button" value="查询" />
     </ul>
