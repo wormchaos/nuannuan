@@ -14,18 +14,22 @@
     <script src="/nuannuan/js/jquery-1.8.3.min.js"></script>
     <script src="/nuannuan/js/common.js"></script>
 </head>
-<body>
+<body id="cloth">
+<input type="hidden" id="action" value="0"/>
 <div>
-    <ul id="menu">
-        <li type="1">发型</li>
-        <li type="2">连衣裙</li>
-        <li type="3">外套</li>
-        <li type="4">上衣</li>
-        <li type="5">下装</li>
-        <li type="6">袜子</li>
-        <li type="7">鞋子</li>
-        <li type="8">饰品</li>
-        <li type="9">妆容</li>
+    <ul id="menu" class="menu">
+        <li type="1"><a href="javascript:void(0);">发型</a></li>
+        <li type="2"><a href="javascript:void(0);">连衣裙</a></li>
+        <li type="3"><a href="javascript:void(0);">外套</a></li>
+        <li type="4"><a href="javascript:void(0);">上衣</a></li>
+        <li type="5"><a href="javascript:void(0);">下装</a></li>
+        <li type="6"><a href="javascript:void(0);">袜子</a></li>
+        <li type="7"><a href="javascript:void(0);">鞋子</a></li>
+        <li type="8"><a href="javascript:void(0);">饰品</a></li>
+        <li type="9"><a href="javascript:void(0);">妆容</a></li>
+        <label><input class="allCloth" name="allCloth" type="radio" value="0" checked="checked" />全部</label>
+        <label><input class="allCloth" name="allCloth" type="radio" value="1" />自己衣柜</label>
+        <label><input class="allCloth" name="allCloth" type="radio" value="2" />没加入衣柜</label>
     </ul>
 </div>
 <div>
@@ -48,26 +52,25 @@
             <th>标签2</th>
             <th>获取途径</th>
         </tr>
-    <c:forEach var="list" items="${itemList}">
         <tr class="item_content">
-            <td><c:out value="${list.name}" /></td>
-            <td><c:out value="${list.num}" /></td>
-            <td><c:out value="${list.level}" /></td>
-            <td><c:out value="${list.huali}" /></td>
-            <td><c:out value="${list.jianyue}" /></td>
-            <td><c:out value="${list.youya}" /></td>
-            <td><c:out value="${list.huopo}" /></td>
-            <td><c:out value="${list.chengshu}" /></td>
-            <td><c:out value="${list.keai}" /></td>
-            <td><c:out value="${list.xinggan}" /></td>
-            <td><c:out value="${list.qingchun}" /></td>
-            <td><c:out value="${list.qingliang}" /></td>
-            <td><c:out value="${list.baonuan}" /></td>
-            <td><c:out value="${list.label1}" /></td>
-            <td><c:out value="${list.label2}" /></td>
-            <td><c:out value="${list.getfrom}" /></td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
         </tr>
-    </c:forEach>
     </table>
     <div id="pageUp_menu">
         <span class="preview">上一页</span>

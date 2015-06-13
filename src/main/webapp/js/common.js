@@ -1,23 +1,40 @@
 var project_name = "/nuannuan";
 $(document).ready(function() {
-    $("#menu li").live("click", function(){
-        getClothList($(this).attr("type"), 1, 10);
-        $("#pageUp_menu .pageIndex").html(1);
-    });
 
-    $("#pageUp_menu .preview").live("click", function(){
-        var page = parseInt($("#pageUp_menu .pageIndex").html());
-        if(page == 1) {
-            return;
-        }
-        getClothList($("#item_table tr").eq(0).attr("type"), page - 1, 10);
-        $("#pageUp_menu .pageIndex").html(parseInt($("#pageUp_menu .pageIndex").html()) -1);
-    });
+    if($("body#cloth").length) {
+        getClothList($("#action").val(), $("#item_table tr").eq(0).attr("type"), parseInt($("#pageUp_menu .pageIndex").html()), 10);
 
-    $("#pageUp_menu .nextview").live("click", function(){
-        getClothList(1, $("#item_table tr").eq(0).attr("type"), parseInt($("#pageUp_menu .pageIndex").html()) + 1, 10);
-        $("#pageUp_menu .pageIndex").html(parseInt($("#pageUp_menu .pageIndex").html()) + 1);
-    });
+        $("tr.item_content").live("click", function(){
+            var clothId = $(this).attr("cId");
+            addToMyWardrobe(clothId);
+        });
+
+        /* 点击衣服种类 */
+        $("#menu li").live("click", function(){
+            getClothList($("#action").val(), $(this).attr("type"), 1, 10);
+            $("#pageUp_menu .pageIndex").html(1);
+        });
+        /* 点击衣服种类 */
+        $("input[type='radio']").bind("change", function(){
+            $("#action").val($("input[type='radio']:checked").val());
+            getClothList($("#action").val(), $("#item_table tr").eq(0).attr("type"), 1, 10);
+            $("#pageUp_menu .pageIndex").html(1);
+        });
+
+        $("#pageUp_menu .preview").live("click", function(){
+            var page = parseInt($("#pageUp_menu .pageIndex").html());
+            if(page == 1) {
+                return;
+            }
+            getClothList($("#action").val(), $("#item_table tr").eq(0).attr("type"), page - 1, 10);
+            $("#pageUp_menu .pageIndex").html(parseInt($("#pageUp_menu .pageIndex").html()) -1);
+        });
+
+        $("#pageUp_menu .nextview").live("click", function(){
+            getClothList($("#action").val(), $("#item_table tr").eq(0).attr("type"), parseInt($("#pageUp_menu .pageIndex").html()) + 1, 10);
+            $("#pageUp_menu .pageIndex").html(parseInt($("#pageUp_menu .pageIndex").html()) + 1);
+        });
+    }
 
     $("#search_decoration").live("click", function(){
         getDecorationList();
@@ -56,10 +73,6 @@ $(document).ready(function() {
         $("#loginForm #register").val("登录");
         $("#loginForm").attr("action", "login");
     });
-    /*wardrobe.jsp*/
-    if($("body#wardrobe").length) {
-        getClothList(1, $("#item_table tr").eq(0).attr("type"), parseInt($("#pageUp_menu .pageIndex").html()), 10);
-    }
 });
 
 //获取数据
@@ -77,10 +90,10 @@ function getClothList(action, type, pageIndex, pageSize) {
             pageSize : pageSize
         },
         success: function (result) {
-            $("#item_table tr.item_content").html('');
+            $("#item_table tr.item_content").remove();
             $("#item_table tr").eq(0).attr("type", type);
             for (var i = 0; i < result.length; i++) {
-                var content = "<tr class='item_content'>"
+                var content = "<tr class='item_content' cId = '" + result[i].id + "'>";
                 content += "<td>" + result[i].type + "</td>";
                 content += "<td>" + result[i].name + "</td>";
                 content += "<td>" + result[i].num + "</td>";
@@ -105,8 +118,30 @@ function getClothList(action, type, pageIndex, pageSize) {
             console.log("error");
         }
     });
-
 }
+
+//获取数据
+function addToMyWardrobe(cId) {
+    var url = project_name + "/decoration/ajax/addCloth"
+    $.ajax({
+        type: "POST",
+        url: url,
+        contentType :  "application/x-www-form-urlencoded",
+        dataType:"json",
+        data: {
+            clothId:cId
+        },
+        success: function (result) {
+            if(result.success == "1") {
+                $("tr.item_content[cId='"+ cId +"']").css({ "color": "#ff0011", "background": "blue" });
+            }
+        },
+        error: function (a, b, c) {
+            console.log("error");
+        }
+    });
+}
+
 
 //获取搭配结果
 function getDecorationList() {
@@ -133,9 +168,9 @@ function getDecorationList() {
             cool: cool
         },
         success: function (result) {
-            $("#item_table tr.item_content").html('');
+            $("#item_table tr.item_content").remove();
             for (var i = 0; i < result.length; i++) {
-                var content = "<tr class='item_content'>"
+                var content = "<tr class='item_content' cId = '" + result[i].id + "'>";
                 content += "<td>" + result[i].type + "</td>";
                 content += "<td>" + result[i].name + "</td>";
                 content += "<td>" + result[i].num + "</td>";

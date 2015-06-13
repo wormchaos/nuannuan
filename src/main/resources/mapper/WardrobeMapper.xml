@@ -33,8 +33,15 @@
     <select id="findCloths" resultMap="clothMap">
         <![CDATA[
             SELECT c.id,c.type,c.num,c.name,c.level,c.brief,c.elegance,c.lovely,c.pure,c.cool,c.label1,c.label2,c.label3,c.cloth_from
-             FROM cloth c RIGHT JOIN wardrobe w ON c.id = w.userId WHERE c.id = #{userId} AND c.type = #{type} AND w.delete = 0
+             FROM cloth c RIGHT JOIN wardrobe w ON c.id = w.clothId WHERE w.userId = #{userId} AND c.type = #{type} AND w.delete = 0
             ORDER BY type , num LIMIT #{pageStart}, #{pageSize}
+        ]]>
+    </select>
+
+    <select id="findWardrobe" resultMap="wardrobeMap">
+        <![CDATA[
+              SELECT userId, clothId
+               FROM wardrobe WHERE userId = #{userId} AND clothId = #{clothId}
         ]]>
     </select>
 

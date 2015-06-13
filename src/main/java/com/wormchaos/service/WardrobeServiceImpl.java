@@ -1,6 +1,7 @@
 package com.wormchaos.service;
 
 import com.wormchaos.dao.entity.Cloth;
+import com.wormchaos.dao.entity.Wardrobe;
 import com.wormchaos.dao.persistence.WardrobeMapper;
 import com.wormchaos.service.base.WardrobeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +26,22 @@ public class WardrobeServiceImpl implements WardrobeService {
     }
 
     @Override
-    public void insertClothIntoWardrobe(Integer userId, List<Cloth> clothList) {
+    public Wardrobe findWardrobe(Integer userId, Integer clothId) {
+        return wardrobeMapper.findWardrobe(userId, clothId);
+    }
+
+    @Override
+    public void insertClothListIntoWardrobe(Integer userId, List<Cloth> clothList) {
         if(CollectionUtils.isEmpty(clothList)) {
             return;
         }
         for(Cloth cloth : clothList) {
             wardrobeMapper.createWardrobe(userId, cloth.getId());
         }
+    }
+
+    @Override
+    public void insertClothIntoWardrobe(Integer userId, Integer clothId) {
+        wardrobeMapper.createWardrobe(userId, clothId);
     }
 }

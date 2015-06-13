@@ -1,6 +1,7 @@
 package com.wormchaos.service.base;
 
 import com.wormchaos.dao.entity.Cloth;
+import com.wormchaos.dao.entity.Wardrobe;
 
 import java.util.List;
 
@@ -11,5 +12,9 @@ public interface WardrobeService {
 
     List<Cloth> findMyClothes(Integer userId, Integer type, Integer pageIndex, Integer pageSize);
 
-    void insertClothIntoWardrobe(Integer userId, List<Cloth> clothList);
+    Wardrobe findWardrobe(Integer userId,Integer clothId);
+
+    void insertClothListIntoWardrobe(Integer userId, List<Cloth> clothList);
+
+    void insertClothIntoWardrobe(Integer userId, Integer clothId);
 }

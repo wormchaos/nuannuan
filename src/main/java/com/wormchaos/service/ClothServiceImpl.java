@@ -25,6 +25,11 @@ public class ClothServiceImpl implements ClothService {
     }
 
     @Override
+    public List<Cloth> findUnSelectCloths(Integer userId, Integer type, Integer pageIndex, Integer pageSize) {
+        return clothMapper.findUnSelectCloths(userId, type, pageIndex, pageSize);
+    }
+
+    @Override
     public void createCloth(Cloth cloth) {
         clothMapper.createCloth(cloth);
     }

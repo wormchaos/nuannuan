@@ -23,7 +23,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by wormchaos on 2015/6/9.
@@ -46,9 +48,8 @@ public class DecorationController {
                              @RequestParam(required = false, value = "pageIndex", defaultValue = "1") Integer pageIndex,
                              @RequestParam(required = false, value = "pageSize", defaultValue = "10") Integer pageSize,
                              @RequestParam(required = false, value = "type", defaultValue = "1") Integer type ) throws IOException, BiffException {
-        List<ItemEntity> itemList = itemService.findItems(type, pageIndex, pageSize);
         ModelAndView model = new ModelAndView("decoration");
-        model.addObject("itemList",itemList);
+        model.addObject("action", "0");
         return model;
     }
 
@@ -61,6 +62,7 @@ public class DecorationController {
     @RequestMapping("wardrobe")
     public ModelAndView wardrobe(HttpServletRequest request, HttpServletResponse response) throws IOException, BiffException {
         ModelAndView model = new ModelAndView("wardrobe");
+        model.addObject("action", "1");
         return model;
     }
 
@@ -70,17 +72,20 @@ public class DecorationController {
                              @RequestParam(required = false, value = "pageIndex", defaultValue = "1") Integer pageIndex,
                              @RequestParam(required = false, value = "pageSize", defaultValue = "10") Integer pageSize,
                              @RequestParam(required = false, value = "type", defaultValue = "1") Integer type,
-                             @RequestParam(required = false, value = "action", defaultValue = "1") Integer action ) throws IOException, BiffException {
+                             @RequestParam(required = false, value = "action") Integer action ) throws IOException, BiffException {
+        User user = (User) request.getSession().getAttribute(NnUtils.SESSION_USER);
+        if (null == user) {
+            return null;
+        }
         List<DecorationDto> decorationDtoList = null;
         if(null == action || 0 ==action) {
-            List<ItemEntity> itemList = itemService.findItems(type, pageIndex, pageSize);
-            decorationDtoList = covertFromItem(itemList);
+            List<Cloth> clothList = clothService.findCloths(type, pageIndex, pageSize);
+            decorationDtoList = covertFromCloth(clothList);
         } else if(1 == action) {
-            User user = (User) request.getSession().getAttribute(NnUtils.SESSION_USER);
-            if (null == user) {
-                return null;
-            }
             List<Cloth> clothList = wardrobeService.findMyClothes(user.getId(), type, pageIndex, pageSize);
+            decorationDtoList = covertFromCloth(clothList);
+        } else if(2 == action) {
+            List<Cloth> clothList = clothService.findUnSelectCloths(user.getId(), type, pageIndex, pageSize);
             decorationDtoList = covertFromCloth(clothList);
         }
         return decorationDtoList;
@@ -99,6 +104,22 @@ public class DecorationController {
         List<Cloth> clothList = clothService.calculateDecoration(brief, elegance, lovely, pure, cool, null, null);
         List<DecorationDto> itemDtoList = covertFromCloth(clothList);
         return itemDtoList;
+    }
+
+    @RequestMapping("ajax/addCloth")
+    @ResponseBody
+    public Map<String, String> addCloth(HttpServletRequest request, HttpServletResponse response,
+                                        @RequestParam(required = false, value = "clothId") Integer clothId) throws IOException, BiffException {
+        User user = (User) request.getSession().getAttribute(NnUtils.SESSION_USER);
+        if (null == user) {
+            return null;
+        }
+        if(null == wardrobeService.findWardrobe(user.getId(), clothId)) {
+            wardrobeService.insertClothIntoWardrobe(user.getId(), clothId);
+        }
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("success", "1");
+        return map;
     }
 
     private List<DecorationDto> covertFromItem(List<ItemEntity> itemEntityList) {

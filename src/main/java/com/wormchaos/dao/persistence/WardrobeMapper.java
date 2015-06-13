@@ -13,5 +13,7 @@ public interface WardrobeMapper {
 
     List<Cloth> findCloths(@Param("userId") Integer userId, @Param("type")  Integer type, @Param("pageStart") Integer pageStart, @Param("pageSize") Integer pageSize );
 
-    Wardrobe createWardrobe(@Param("userId") Integer userId,@Param("clothId")  Integer clothId);
+    Wardrobe findWardrobe(@Param("userId") Integer userId, @Param("clothId") Integer clothId);
+
+    void createWardrobe(@Param("userId") Integer userId,@Param("clothId")  Integer clothId);
 }

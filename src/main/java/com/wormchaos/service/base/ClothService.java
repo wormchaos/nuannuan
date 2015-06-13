@@ -11,6 +11,8 @@ public interface ClothService {
 
     List<Cloth> findCloths(Integer type, Integer pageIndex, Integer pageSize);
 
+    List<Cloth> findUnSelectCloths(Integer userId, Integer type, Integer pageIndex, Integer pageSize);
+
     void createCloth(Cloth cloth);
 
     /**

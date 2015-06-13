@@ -14,7 +14,8 @@
     <script src="/nuannuan/js/jquery-1.8.3.min.js"></script>
     <script src="/nuannuan/js/common.js"></script>
 </head>
-<body id="wardrobe">
+<body id="cloth" class="menu">
+<input type="hidden" id="action" value="${action}"/>
 <div>
     <table id="item_table">
         <tr type = "1">

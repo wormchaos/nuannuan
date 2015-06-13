@@ -42,6 +42,16 @@
         ]]>
     </select>
 
+    <select id="findUnSelectCloths" resultMap="clothMap">
+        <![CDATA[
+            SELECT id,type,num,name,level,brief,elegance,lovely,pure,cool,label1,label2,label3,cloth_from
+             FROM cloth WHERE type = #{type} AND id NOT IN(
+                SELECT clothId FROM wardrobe WHERE userId = #{userId}
+             )
+              ORDER BY type , num LIMIT #{pageStart}, #{pageSize}
+        ]]>
+    </select>
+
     <insert id="createCloth" parameterMap="clothInsertMap">
         <![CDATA[
               INSERT INTO cloth
