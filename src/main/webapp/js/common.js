@@ -154,7 +154,7 @@ function getDecorationList() {
         alert("不能为空");
         return;
     }
-    var url = project_name + "/decoration/decorate"
+    var url = project_name + "/decoration/ajax/decorate"
     $.ajax({
         type: "POST",
         url: url,
