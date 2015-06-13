@@ -1,5 +1,6 @@
 package com.wormchaos.dao.persistence;
 
+import com.wormchaos.dao.entity.Cloth;
 import com.wormchaos.dao.entity.Wardrobe;
 import org.apache.ibatis.annotations.Param;
 
@@ -10,7 +11,7 @@ import java.util.List;
  */
 public interface WardrobeMapper {
 
-    List<Wardrobe> findWardrobes(Integer userId);
+    List<Cloth> findCloths(@Param("userId") Integer userId, @Param("type")  Integer type, @Param("pageStart") Integer pageStart, @Param("pageSize") Integer pageSize );
 
-    Wardrobe createWardrobe(@Param("username") Integer userId, Integer clothId);
+    Wardrobe createWardrobe(@Param("userId") Integer userId,@Param("clothId")  Integer clothId);
 }

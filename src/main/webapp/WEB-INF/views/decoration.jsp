@@ -28,7 +28,7 @@
         <li type="9">妆容</li>
     </ul>
 </div>
-<div>s
+<div>
     <table id="item_table">
         <tr type = "1">
             <th>名称</th>

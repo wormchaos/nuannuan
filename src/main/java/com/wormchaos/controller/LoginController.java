@@ -42,7 +42,7 @@ public class LoginController {
         } else {
             request.getSession().setAttribute(NnUtils.SESSION_USER, user);
             if(StringUtils.isEmpty(referer)) {
-                response.sendRedirect("/decoration/decorationPage");
+                response.sendRedirect("/nuannuan/decoration/decorationPage");
             } else {
                 response.sendRedirect(referer);
             }

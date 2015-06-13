@@ -1,26 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wormchaos.dao.persistence.WardrobeMapper">
-    <resultMap id="map" type="com.wormchaos.dao.entity.Wardrobe">
+    <resultMap id="wardrobeMap" type="com.wormchaos.dao.entity.Wardrobe">
         <result column="userId" javaType="Integer" property="userId"></result>
         <result column="clothId" javaType="Integer" property="clothId"></result>
         <result column="delete" javaType="Integer" property="delete"></result>
     </resultMap>
 
-    <parameterMap  id="map" type="com.wormchaos.dao.entity.Wardrobe">
+    <parameterMap  id="wardrobeMap" type="com.wormchaos.dao.entity.Wardrobe">
         <parameter property="userId" />
         <parameter property="clothId" />
         <parameter property="delete" />
     </parameterMap>
 
-    <select id="findWardrobes" parameterType="java.lang.Integer"  resultMap="map">
+    <resultMap id="clothMap" type="com.wormchaos.dao.entity.Cloth">
+        <result column="id" javaType="Integer" property="id"></result>
+        <result column="type" javaType="Integer" property="type"></result>
+        <result column="num" javaType="Integer" property="num"></result>
+        <result column="name" javaType="String" property="name"></result>
+        <result column="level" javaType="Integer" property="level"></result>
+        <result column="brief" javaType="Integer" property="brief"></result>
+        <result column="elegance" javaType="Integer" property="elegance"></result>
+        <result column="lovely" javaType="Integer" property="lovely"></result>
+        <result column="pure" javaType="Integer" property="pure"></result>
+        <result column="cool" javaType="Integer" property="cool"></result>
+        <result column="label1" javaType="String" property="label1"></result>
+        <result column="label2" javaType="String" property="label2"></result>
+        <result column="label3" javaType="String" property="label3"></result>
+        <result column="cloth_from" javaType="String" property="cloth_from"></result>
+    </resultMap>
+
+    <select id="findCloths" resultMap="clothMap">
         <![CDATA[
-            SELECT userId, clothId, delete
-             FROM wardrobe WHERE userId = #{userId} AND delete = 0
+            SELECT c.id,c.type,c.num,c.name,c.level,c.brief,c.elegance,c.lovely,c.pure,c.cool,c.label1,c.label2,c.label3,c.cloth_from
+             FROM cloth c RIGHT JOIN wardrobe w ON c.id = w.userId WHERE c.id = #{userId} AND c.type = #{type} AND w.delete = 0
+            ORDER BY type , num LIMIT #{pageStart}, #{pageSize}
         ]]>
     </select>
 
-    <insert id="createWardrobe" parameterMap="map">
+    <insert id="createWardrobe" parameterMap="wardrobeMap">
         <![CDATA[
               INSERT INTO wardrobe
               (userId, clothId)

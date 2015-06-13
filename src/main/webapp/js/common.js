@@ -1,7 +1,7 @@
 var project_name = "/nuannuan";
 $(document).ready(function() {
     $("#menu li").live("click", function(){
-        getItemList($(this).attr("type"), 1, 10);
+        getClothList($(this).attr("type"), 1, 10);
         $("#pageUp_menu .pageIndex").html(1);
     });
 
@@ -10,12 +10,12 @@ $(document).ready(function() {
         if(page == 1) {
             return;
         }
-        getItemList($("#item_table tr").eq(0).attr("type"), page - 1, 10);
+        getClothList($("#item_table tr").eq(0).attr("type"), page - 1, 10);
         $("#pageUp_menu .pageIndex").html(parseInt($("#pageUp_menu .pageIndex").html()) -1);
     });
 
     $("#pageUp_menu .nextview").live("click", function(){
-        getItemList($("#item_table tr").eq(0).attr("type"), parseInt($("#pageUp_menu .pageIndex").html()) + 1, 10);
+        getClothList(1, $("#item_table tr").eq(0).attr("type"), parseInt($("#pageUp_menu .pageIndex").html()) + 1, 10);
         $("#pageUp_menu .pageIndex").html(parseInt($("#pageUp_menu .pageIndex").html()) + 1);
     });
 
@@ -27,6 +27,7 @@ $(document).ready(function() {
         uploadData();
     });
 
+    /* login.jsp*/
     $("#login").live("click", function(){
         if ($("#username").val() == "") {
             $(".error").html("请输入账号");
@@ -55,17 +56,22 @@ $(document).ready(function() {
         $("#loginForm #register").val("登录");
         $("#loginForm").attr("action", "login");
     });
+    /*wardrobe.jsp*/
+    if($("body#wardrobe").length) {
+        getClothList(1, $("#item_table tr").eq(0).attr("type"), parseInt($("#pageUp_menu .pageIndex").html()), 10);
+    }
 });
 
 //获取数据
-function getItemList(type, pageIndex, pageSize) {
-    var url = project_name + "/decoration/getItemList"
+function getClothList(action, type, pageIndex, pageSize) {
+    var url = project_name + "/decoration/ajax/getClothList"
     $.ajax({
         type: "POST",
         url: url,
         contentType :  "application/x-www-form-urlencoded",
         dataType:"json",
         data: {
+            action:action,
             type : type,
             pageIndex : pageIndex,
             pageSize : pageSize
@@ -73,8 +79,10 @@ function getItemList(type, pageIndex, pageSize) {
         success: function (result) {
             $("#item_table tr.item_content").html('');
             $("#item_table tr").eq(0).attr("type", type);
-            for(var i = 0; i < result.length; i++){
-                var content = "<td>" + result[i].name + "</td>";
+            for (var i = 0; i < result.length; i++) {
+                var content = "<tr class='item_content'>"
+                content += "<td>" + result[i].type + "</td>";
+                content += "<td>" + result[i].name + "</td>";
                 content += "<td>" + result[i].num + "</td>";
                 content += "<td>" + result[i].level + "</td>";
                 content += "<td>" + result[i].huali + "</td>";
@@ -85,11 +93,12 @@ function getItemList(type, pageIndex, pageSize) {
                 content += "<td>" + result[i].keai + "</td>";
                 content += "<td>" + result[i].xinggan + "</td>";
                 content += "<td>" + result[i].qingchun + "</td>";
+                content += "<td>" + result[i].qingliang + "</td>";
                 content += "<td>" + result[i].baonuan + "</td>";
                 content += "<td>" + result[i].label1 + "</td>";
                 content += "<td>" + result[i].label2 + "</td>";
-                content += "<td>" + result[i].getfrom + "</td>";
-                $("#item_table tr.item_content").eq(i).html(content);
+                content += "<td>" + result[i].getfrom + "</td></tr>";
+                $("#item_table tr").eq(i).after(content);
             }
         },
         error: function (a, b, c) {

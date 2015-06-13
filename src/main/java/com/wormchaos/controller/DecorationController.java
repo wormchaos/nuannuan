@@ -1,15 +1,19 @@
 package com.wormchaos.controller;
 
 import com.wormchaos.common.DecorationConstant;
+import com.wormchaos.common.NnUtils;
 import com.wormchaos.controller.dto.DecorationDto;
 import com.wormchaos.dao.entity.Cloth;
 import com.wormchaos.dao.entity.ItemEntity;
+import com.wormchaos.dao.entity.User;
 import com.wormchaos.service.base.ClothService;
 import com.wormchaos.service.base.ItemService;
+import com.wormchaos.service.base.WardrobeService;
 import jxl.read.biff.BiffException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,9 +34,12 @@ public class DecorationController {
 
     @Autowired
     ItemService itemService;
+    @Autowired
+
+    ClothService clothService;
 
     @Autowired
-    ClothService clothService;
+    WardrobeService wardrobeService;
 
     @RequestMapping("main")
     public ModelAndView main(HttpServletRequest request, HttpServletResponse response,
@@ -51,17 +58,35 @@ public class DecorationController {
         return model;
     }
 
-    @RequestMapping("getItemList")
-    @ResponseBody
-    public List<ItemEntity> getItemList(HttpServletRequest request, HttpServletResponse response,
-                             @RequestParam(required = false, value = "pageIndex", defaultValue = "1") Integer pageIndex,
-                             @RequestParam(required = false, value = "pageSize", defaultValue = "10") Integer pageSize,
-                             @RequestParam(required = false, value = "type", defaultValue = "1") Integer type ) throws IOException, BiffException {
-        List<ItemEntity> itemList = itemService.findItems(type, pageIndex, pageSize);
-        return itemList;
+    @RequestMapping("wardrobe")
+    public ModelAndView wardrobe(HttpServletRequest request, HttpServletResponse response) throws IOException, BiffException {
+        ModelAndView model = new ModelAndView("wardrobe");
+        return model;
     }
 
-    @RequestMapping("decorate")
+    @RequestMapping("ajax/getClothList")
+    @ResponseBody
+    public List<DecorationDto> getClothList(HttpServletRequest request, HttpServletResponse response,
+                             @RequestParam(required = false, value = "pageIndex", defaultValue = "1") Integer pageIndex,
+                             @RequestParam(required = false, value = "pageSize", defaultValue = "10") Integer pageSize,
+                             @RequestParam(required = false, value = "type", defaultValue = "1") Integer type,
+                             @RequestParam(required = false, value = "action", defaultValue = "1") Integer action ) throws IOException, BiffException {
+        List<DecorationDto> decorationDtoList = null;
+        if(null == action || 0 ==action) {
+            List<ItemEntity> itemList = itemService.findItems(type, pageIndex, pageSize);
+            decorationDtoList = covertFromItem(itemList);
+        } else if(1 == action) {
+            User user = (User) request.getSession().getAttribute(NnUtils.SESSION_USER);
+            if (null == user) {
+                return null;
+            }
+            List<Cloth> clothList = wardrobeService.findMyClothes(user.getId(), type, pageIndex, pageSize);
+            decorationDtoList = covertFromCloth(clothList);
+        }
+        return decorationDtoList;
+    }
+
+    @RequestMapping("ajax/decorate")
     @ResponseBody
     public List<DecorationDto> decorate(HttpServletRequest request, HttpServletResponse response,
                                         @RequestParam(required = false, value = "brief") Integer brief,
@@ -78,57 +103,61 @@ public class DecorationController {
 
     private List<DecorationDto> covertFromItem(List<ItemEntity> itemEntityList) {
         List<DecorationDto> list = new ArrayList<DecorationDto>();
-        for(ItemEntity item : itemEntityList) {
-            DecorationDto dto = new DecorationDto();
-            BeanUtils.copyProperties(item, dto);
-            dto.setJianyue(DecorationConstant.levelMapping.get(item.getJianyue()));
-            dto.setHuali(DecorationConstant.levelMapping.get(item.getHuali()));
-            dto.setYouya(DecorationConstant.levelMapping.get(item.getYouya()));
-            dto.setHuopo(DecorationConstant.levelMapping.get(item.getHuopo()));
-            dto.setChengshu(DecorationConstant.levelMapping.get(item.getChengshu()));
-            dto.setKeai(DecorationConstant.levelMapping.get(item.getKeai()));
-            dto.setXinggan(DecorationConstant.levelMapping.get(item.getXinggan()));
-            dto.setQingchun(DecorationConstant.levelMapping.get(item.getQingchun()));
-            dto.setQingliang(DecorationConstant.levelMapping.get(item.getQingliang()));
-            dto.setBaonuan(DecorationConstant.levelMapping.get(item.getBaonuan()));
-            dto.setType(DecorationConstant.typeMapping.get(item.getType()));
-            list.add(dto);
+        if (!CollectionUtils.isEmpty(list)) {
+            for (ItemEntity item : itemEntityList) {
+                DecorationDto dto = new DecorationDto();
+                BeanUtils.copyProperties(item, dto);
+                dto.setJianyue(DecorationConstant.levelMapping.get(item.getJianyue()));
+                dto.setHuali(DecorationConstant.levelMapping.get(item.getHuali()));
+                dto.setYouya(DecorationConstant.levelMapping.get(item.getYouya()));
+                dto.setHuopo(DecorationConstant.levelMapping.get(item.getHuopo()));
+                dto.setChengshu(DecorationConstant.levelMapping.get(item.getChengshu()));
+                dto.setKeai(DecorationConstant.levelMapping.get(item.getKeai()));
+                dto.setXinggan(DecorationConstant.levelMapping.get(item.getXinggan()));
+                dto.setQingchun(DecorationConstant.levelMapping.get(item.getQingchun()));
+                dto.setQingliang(DecorationConstant.levelMapping.get(item.getQingliang()));
+                dto.setBaonuan(DecorationConstant.levelMapping.get(item.getBaonuan()));
+                dto.setType(DecorationConstant.typeMapping.get(item.getType()));
+                list.add(dto);
+            }
         }
         return list;
     }
 
     private List<DecorationDto> covertFromCloth(List<Cloth> clothList) {
         List<DecorationDto> list = new ArrayList<DecorationDto>();
-        for(Cloth cloth : clothList) {
-            DecorationDto dto = new DecorationDto();
-            BeanUtils.copyProperties(cloth, dto);
-            if(cloth.getBrief() > 0) {
-                dto.setJianyue(DecorationConstant.levelMapping.get(cloth.getBrief()));
-            } else {
-                dto.setHuali(DecorationConstant.levelMapping.get(- cloth.getBrief()));
+        if (!CollectionUtils.isEmpty(clothList)) {
+            for (Cloth cloth : clothList) {
+                DecorationDto dto = new DecorationDto();
+                BeanUtils.copyProperties(cloth, dto);
+                if (cloth.getBrief() > 0) {
+                    dto.setJianyue(DecorationConstant.levelMapping.get(cloth.getBrief()));
+                } else {
+                    dto.setHuali(DecorationConstant.levelMapping.get(-cloth.getBrief()));
+                }
+                if (cloth.getElegance() > 0) {
+                    dto.setYouya(DecorationConstant.levelMapping.get(cloth.getElegance()));
+                } else {
+                    dto.setHuopo(DecorationConstant.levelMapping.get(-cloth.getElegance()));
+                }
+                if (cloth.getLovely() > 0) {
+                    dto.setKeai(DecorationConstant.levelMapping.get(cloth.getLovely()));
+                } else {
+                    dto.setChengshu(DecorationConstant.levelMapping.get(-cloth.getLovely()));
+                }
+                if (cloth.getPure() > 0) {
+                    dto.setQingchun(DecorationConstant.levelMapping.get(cloth.getPure()));
+                } else {
+                    dto.setXinggan(DecorationConstant.levelMapping.get(-cloth.getPure()));
+                }
+                if (cloth.getCool() > 0) {
+                    dto.setQingliang(DecorationConstant.levelMapping.get(cloth.getCool()));
+                } else {
+                    dto.setBaonuan(DecorationConstant.levelMapping.get(-cloth.getCool()));
+                }
+                dto.setType(DecorationConstant.typeMapping.get(cloth.getType()));
+                list.add(dto);
             }
-            if(cloth.getElegance() > 0) {
-                dto.setYouya(DecorationConstant.levelMapping.get(cloth.getElegance()));
-            } else {
-                dto.setHuopo(DecorationConstant.levelMapping.get(- cloth.getElegance()));
-            }
-            if(cloth.getLovely() > 0) {
-                dto.setKeai(DecorationConstant.levelMapping.get(cloth.getLovely()));
-            } else {
-                dto.setChengshu(DecorationConstant.levelMapping.get(- cloth.getLovely()));
-            }
-            if(cloth.getPure() > 0) {
-                dto.setQingchun(DecorationConstant.levelMapping.get(cloth.getPure()));
-            } else {
-                dto.setXinggan(DecorationConstant.levelMapping.get(- cloth.getPure()));
-            }
-            if(cloth.getCool() > 0) {
-                dto.setQingliang(DecorationConstant.levelMapping.get(cloth.getCool()));
-            } else {
-                dto.setBaonuan(DecorationConstant.levelMapping.get(- cloth.getCool()));
-            }
-            dto.setType(DecorationConstant.typeMapping.get(cloth.getType()));
-            list.add(dto);
         }
         return list;
     }
