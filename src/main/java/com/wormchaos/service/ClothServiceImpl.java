@@ -46,10 +46,10 @@ public class ClothServiceImpl implements ClothService {
             Cloth clothSel = null;
             for (Cloth cloth : clothList) {
                 int brief = cloth.getBrief() * briefFlg;
-                int elegance = cloth.getBrief() * eleganceFlg;
-                int lovely = cloth.getBrief() * lovelyFlg;
-                int pure = cloth.getBrief() * pureFlg;
-                int cool = cloth.getBrief() * coolFlg;
+                int elegance = cloth.getElegance() * eleganceFlg;
+                int lovely = cloth.getLovely() * lovelyFlg;
+                int pure = cloth.getPure() * pureFlg;
+                int cool = cloth.getCool() * coolFlg;
                 if( cloth.getNum() > 0 ) {
                     double result = getLevelCount(cloth.getLevel()) * (brief + elegance + lovely + pure + cool);
                     if (result > max) {
