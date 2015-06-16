@@ -8,6 +8,16 @@ import java.util.Map;
  */
 public class DecorationConstant {
 
+    public static Map<String, Integer> levelToValMapping = new HashMap<String, Integer>() {{
+        put(LEVEL_0, 0);
+        put(LEVEL_1, 1);
+        put(LEVEL_2, 2);
+        put(LEVEL_3, 3);
+        put(LEVEL_4, 4);
+        put(LEVEL_5, 5);
+        put(LEVEL_6, 6);
+    }};
+
     public static Map<Integer, String> levelMapping = new HashMap<Integer, String>() {{
         put(0, LEVEL_0);
         put(1, LEVEL_1);

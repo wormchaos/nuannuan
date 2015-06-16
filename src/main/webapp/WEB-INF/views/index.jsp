@@ -14,7 +14,8 @@
 <div>
     <a href="/nuannuan/decoration/main">所有服装一览</a>
     <a href="/nuannuan/decoration/decorationPage">竞技场搭配</a>
-    <a href="/nuannuan/decoration/wardrobe">添加自己的服饰</a>
+    <a href="/nuannuan/decoration/wardrobe">衣柜</a>
+    <a href="/nuannuan/cloth/uploadPage">excel数据上传</a>
 
 </div>
 </body>

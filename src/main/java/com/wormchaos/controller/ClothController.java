@@ -1,13 +1,18 @@
 package com.wormchaos.controller;
 
+import com.wormchaos.common.DecorationConstant;
+import com.wormchaos.common.NnUtils;
 import com.wormchaos.dao.entity.Cloth;
+import com.wormchaos.dao.entity.User;
 import com.wormchaos.service.base.ClothService;
+import com.wormchaos.service.base.WardrobeService;
 import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,6 +36,9 @@ public class ClothController {
 
     @Autowired
     ClothService clothService;
+
+    @Autowired
+    WardrobeService wardrobeService;
 
     /**
      * 上传主页
@@ -59,6 +67,11 @@ public class ClothController {
     @ResponseBody
     public List<Cloth> uploadData(HttpServletRequest request, HttpServletResponse response,
                              @RequestParam("xlsUpload") MultipartFile file) throws IOException, BiffException {
+        User user = (User) request.getSession().getAttribute(NnUtils.SESSION_USER);
+        if (null == user) {
+            return null;
+        }
+        Integer userId = user.getId();
         Workbook rwb = null;
         Cell cell = null;
         InputStream inputStream = file.getInputStream();
@@ -70,23 +83,41 @@ public class ClothController {
             Sheet sheet = rwb.getSheet(k);
             //行数(表头的目录不需要，从1开始)
             for (int i = 1; i < sheet.getRows(); i++) {
-                //创建一个数组 用来存储每一列的值
-                String[] str = new String[sheet.getColumns()];
-                Cloth cloth = new Cloth();
-                if (null == sheet.getCell(0, i).getContents() || "".equals(sheet.getCell(0, i).getContents())) {
+                int j = 0;
+                String name = sheet.getCell(j, i).getContents();
+                if (null == name || "".equals(name)) {
                     break;
                 }
+                String num = sheet.getCell(j + 1, i).getContents();
+                if (null == num || "".equals(num)) {
+                    continue;
+                }
+                // 判断如果存在就不执行
+                Cloth searchCloth = clothService.findClothsByNameNum(name, Integer.parseInt(num), k+1);
+                if(null != searchCloth) {
+                    if(!StringUtils.isEmpty(sheet.getCell(j + 16, i).getContents())){
+                        wardrobeService.insertClothIntoWardrobe(userId, searchCloth.getId());
+                    }
+                    continue;
+                }
+
+                Cloth cloth = new Cloth();
+                cloth.setName(name);
                 cloth.setType(k + 1);
+                if(null != num && !"".equals(num)){
+                    cloth.setNum(Integer.parseInt(num));
+                }
                 boolean errorFlg = false;
-                cloth.setName(sheet.getCell(0, i).getContents());
-                if(null != sheet.getCell(1, i).getContents() && !"".equals(sheet.getCell(1, i).getContents())){
-                    cloth.setNum(Integer.parseInt(sheet.getCell(1, i).getContents()));
+
+                if(null != sheet.getCell(j + 2, i).getContents() && !"".equals(sheet.getCell(2, i).getContents())) {
+                    cloth.setLevel(Integer.parseInt(sheet.getCell(j + 2, i).getContents()));
                 }
-                if(null != sheet.getCell(2, i).getContents() && !"".equals(sheet.getCell(2, i).getContents())) {
-                    cloth.setLevel(Integer.parseInt(sheet.getCell(2, i).getContents()));
+                // TODO 装饰
+                if(k == 7) {
+                    j++;
                 }
-                Integer huali = getResult(sheet.getCell(3, i).getContents());
-                Integer jianyue = getResult(sheet.getCell(4, i).getContents());
+                Integer huali = getResult(sheet.getCell(j + 3, i).getContents());
+                Integer jianyue = getResult(sheet.getCell(j + 4, i).getContents());
 
                 if((huali == 0 && jianyue > 0) || (huali > 0 && jianyue == 0)) {
                     if(jianyue > 0) {
@@ -99,8 +130,8 @@ public class ClothController {
                     errorFlg = true;
                 }
 
-                Integer youya = getResult(sheet.getCell(5, i).getContents());
-                Integer huopo = getResult(sheet.getCell(6, i).getContents());
+                Integer youya = getResult(sheet.getCell(j + 5, i).getContents());
+                Integer huopo = getResult(sheet.getCell(j + 6, i).getContents());
 
                 if((youya == 0 && huopo > 0) || (youya > 0 && huopo == 0)) {
                     if(youya > 0) {
@@ -113,9 +144,8 @@ public class ClothController {
                     errorFlg = true;
                 }
 
-                Integer chengshu = getResult(sheet.getCell(7, i).getContents());
-                Integer keai = getResult(sheet.getCell(8, i).getContents());
-
+                Integer chengshu = getResult(sheet.getCell(j + 7, i).getContents());
+                Integer keai = getResult(sheet.getCell(j + 8, i).getContents());
                 if((keai == 0 && chengshu > 0) || (keai > 0 && chengshu == 0)) {
                     if(keai > 0) {
                         cloth.setLovely( keai);
@@ -127,8 +157,8 @@ public class ClothController {
                     errorFlg = true;
                 }
 
-                Integer xinggan = getResult(sheet.getCell(9, i).getContents());
-                Integer qingchun = getResult(sheet.getCell(10, i).getContents());
+                Integer xinggan = getResult(sheet.getCell(j + 9, i).getContents());
+                Integer qingchun = getResult(sheet.getCell(j + 10, i).getContents());
 
                 if((xinggan == 0 && qingchun > 0) || (xinggan > 0 && qingchun == 0)) {
                     if(qingchun > 0) {
@@ -141,8 +171,8 @@ public class ClothController {
                     errorFlg = true;
                 }
 
-                Integer qingliang = getResult(sheet.getCell(11, i).getContents());
-                Integer baonuan = getResult(sheet.getCell(12, i).getContents());
+                Integer qingliang = getResult(sheet.getCell(j + 11, i).getContents());
+                Integer baonuan = getResult(sheet.getCell(j + 12, i).getContents());
 
                 if((qingliang == 0 && baonuan > 0) || (qingliang > 0 && baonuan == 0)) {
                     if(qingliang > 0) {
@@ -154,40 +184,26 @@ public class ClothController {
                 } else{
                     errorFlg = true;
                 }
-                cloth.setLabel1(sheet.getCell(13, i).getContents());
-                cloth.setLabel2(sheet.getCell(14, i).getContents());
-                cloth.setCloth_from(sheet.getCell(15, i).getContents());
+                cloth.setLabel1(sheet.getCell(j + 13, i).getContents());
+                cloth.setLabel2(sheet.getCell(j + 14, i).getContents());
+                cloth.setCloth_from(sheet.getCell(j + 15, i).getContents());
                 //把刚获取的列存入list
                 if(errorFlg) {
                     errorList.add(cloth);
                 } else {
-                    clothService.createCloth(cloth);
+                    Integer cloId = clothService.createCloth(cloth);
+                    // 如果已有，加入
+                    if(!StringUtils.isEmpty(sheet.getCell(j + 16, i).getContents())){
+                        wardrobeService.insertClothIntoWardrobe(userId, cloId);
+                    }
                 }
             }
         }
         return errorList;
     }
 
-
-    private int getResult(String i) {
-        if(null == i || "".equals(i)) {
-            return 0;
-        } else {
-            if("D".equals(i)){
-                return 1;
-            } else if("C".equals(i)){
-                return 2;
-            } else if("B".equals(i)){
-                return 3;
-            } else if("A".equals(i)){
-                return 4;
-            } else if("S".equals(i)){
-                return 5;
-            } else if("SS".equals(i)){
-                return 6;
-            } else {
-                return 0;
-            }
-        }
+    private Integer getResult(String contents) {
+        return DecorationConstant.levelToValMapping.get(contents);
     }
+
 }

@@ -30,8 +30,8 @@ public class ClothServiceImpl implements ClothService {
     }
 
     @Override
-    public void createCloth(Cloth cloth) {
-        clothMapper.createCloth(cloth);
+    public Integer createCloth(Cloth cloth) {
+        return clothMapper.createCloth(cloth);
     }
 
     @Override
@@ -63,6 +63,11 @@ public class ClothServiceImpl implements ClothService {
             }
         }
         return list;
+    }
+
+    @Override
+    public Cloth findClothsByNameNum(String name, Integer num, Integer type) {
+        return clothMapper.findClothsByNameNum(name, num, type);
     }
 
     private Double getLevelCount(int level) {

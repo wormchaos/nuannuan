@@ -14,5 +14,7 @@ public interface ClothMapper {
 
     List<Cloth> findUnSelectCloths(@Param("userId") Integer userId, @Param("type") Integer type, @Param("pageStart") Integer pageStart, @Param("pageSize") Integer pageSize);
 
-    void createCloth(Cloth cloth);
+    Integer createCloth(Cloth cloth);
+
+    Cloth findClothsByNameNum(@Param("name") String name, @Param("num") Integer num, @Param("type") Integer type);
 }

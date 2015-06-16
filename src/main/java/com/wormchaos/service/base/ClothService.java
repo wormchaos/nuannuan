@@ -13,7 +13,7 @@ public interface ClothService {
 
     List<Cloth> findUnSelectCloths(Integer userId, Integer type, Integer pageIndex, Integer pageSize);
 
-    void createCloth(Cloth cloth);
+    Integer createCloth(Cloth cloth);
 
     /**
      * 计算对应的匹配数据
@@ -27,5 +27,7 @@ public interface ClothService {
      * @return
      */
     List<Cloth> calculateDecoration(int briefFlg, int eleganceFlg, int lovelyFlg, int pureFlg, int coolFlg, String label1, String label2);
+
+    Cloth findClothsByNameNum(String name, Integer num, Integer type);
 
 }

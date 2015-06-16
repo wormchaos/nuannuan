@@ -53,6 +53,9 @@
     </select>
 
     <insert id="createCloth" parameterMap="clothInsertMap">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+            SELECT @@IDENTITY
+        </selectKey>
         <![CDATA[
               INSERT INTO cloth
               (type,num,name,level,brief,elegance,lovely,pure,cool,label1,label2,label3,cloth_from)
@@ -60,4 +63,11 @@
               (#{type},#{num},#{name},#{level},#{brief},#{elegance},#{lovely},#{pure},#{cool},#{label1},#{label2},#{label3},#{cloth_from})
         ]]>
     </insert>
+
+    <select id="findClothsByNameNum" resultMap="clothMap">
+        <![CDATA[
+            SELECT id,type,num,name,level,brief,elegance,lovely,pure,cool,label1,label2,label3,cloth_from
+             FROM cloth WHERE name = #{name} or ( num = #{num} and type = #{type} )
+        ]]>
+    </select>
 </mapper>
