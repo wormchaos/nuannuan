@@ -31,6 +31,11 @@ public class LoginFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
         // 如果不是登录页面则判断是否登录
         if (!isLogin(httpRequest)) {
+            // 如果是ajax请求
+            if(httpRequest.getRequestURI().contains("/ajax/")) {
+                filterChain.doFilter(httpRequest, httpResponse);
+                return;
+            }
             // 重定向到登录页面
             // httpResponse.addHeader(UnoConstants.REFERER, httpRequest.getHeader(UnoConstants.REFERER));
             httpResponse.sendRedirect(LOGIN_URI + "?referer="

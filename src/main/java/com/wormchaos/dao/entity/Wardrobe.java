@@ -9,7 +9,7 @@ public class Wardrobe {
 
     private int clothId;
 
-    private int delete;
+    private int delFlag;
 
     public int getUserId() {
         return userId;
@@ -27,11 +27,11 @@ public class Wardrobe {
         this.clothId = clothId;
     }
 
-    public int getDelete() {
-        return delete;
+    public int getDelFlag() {
+        return delFlag;
     }
 
-    public void setDelete(int delete) {
-        this.delete = delete;
+    public void setDelFlag(int delFlag) {
+        this.delFlag = delFlag;
     }
 }

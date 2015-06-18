@@ -1,7 +1,9 @@
 package com.wormchaos.controller;
 
+import com.wormchaos.common.Exception.ErrorCodeException;
 import com.wormchaos.common.MD5Util;
 import com.wormchaos.common.NnUtils;
+import com.wormchaos.controller.dto.ResultBean;
 import com.wormchaos.dao.entity.User;
 import com.wormchaos.service.base.UserService;
 import jxl.read.biff.BiffException;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -67,5 +70,23 @@ public class LoginController {
         password = MD5Util.MD5(password);
         userService.createUser(username, password);
         return model;
+    }
+
+    @RequestMapping("ajax/login")
+    @ResponseBody
+    public ResultBean ajaxLogin(HttpServletRequest request, HttpServletResponse response,
+                              @RequestParam(required = false, value = "username") String username,
+                              @RequestParam(required = false, value = "password") String password) throws IOException, BiffException {
+        if(StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
+            throw new ErrorCodeException(3000);
+        }
+        User user = userService.findUser(username, MD5Util.MD5(password));
+        if(null == user) {
+            throw new ErrorCodeException(3001);
+        }
+        request.getSession().setAttribute(NnUtils.SESSION_USER, user);
+        ResultBean resultBean = new ResultBean();
+        resultBean.setContent(user.getUsername());
+        return resultBean;
     }
 }

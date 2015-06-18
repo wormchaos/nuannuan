@@ -4,13 +4,13 @@
     <resultMap id="wardrobeMap" type="com.wormchaos.dao.entity.Wardrobe">
         <result column="userId" javaType="Integer" property="userId"></result>
         <result column="clothId" javaType="Integer" property="clothId"></result>
-        <result column="delete" javaType="Integer" property="delete"></result>
+        <result column="delFlag" javaType="Integer" property="delFlag"></result>
     </resultMap>
 
     <parameterMap  id="wardrobeMap" type="com.wormchaos.dao.entity.Wardrobe">
         <parameter property="userId" />
         <parameter property="clothId" />
-        <parameter property="delete" />
+        <parameter property="delFlag" />
     </parameterMap>
 
     <resultMap id="clothMap" type="com.wormchaos.dao.entity.Cloth">
@@ -33,7 +33,7 @@
     <select id="findCloths" resultMap="clothMap">
         <![CDATA[
             SELECT c.id,c.type,c.num,c.name,c.level,c.brief,c.elegance,c.lovely,c.pure,c.cool,c.label1,c.label2,c.label3,c.cloth_from
-             FROM cloth c RIGHT JOIN wardrobe w ON c.id = w.clothId WHERE w.userId = #{userId} AND c.type = #{type} AND w.delete = 0
+             FROM cloth c RIGHT JOIN wardrobe w ON c.id = w.clothId WHERE w.userId = #{userId} AND c.type = #{type} AND w.delFlag = 0
             ORDER BY type , num LIMIT #{pageStart}, #{pageSize}
         ]]>
     </select>
@@ -48,9 +48,9 @@
     <insert id="createWardrobe" parameterMap="wardrobeMap">
         <![CDATA[
               INSERT INTO wardrobe
-              (userId, clothId)
+              (userId, clothId, delFlag)
               VALUES
-              (#{userId}, #{clothId})
+              (#{userId}, #{clothId}, 0)
         ]]>
     </insert>
 </mapper>

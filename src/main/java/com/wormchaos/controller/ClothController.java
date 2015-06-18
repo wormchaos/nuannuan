@@ -2,7 +2,10 @@ package com.wormchaos.controller;
 
 import com.wormchaos.common.DecorationConstant;
 import com.wormchaos.common.NnUtils;
+import com.wormchaos.controller.dto.DecorationDto;
+import com.wormchaos.controller.dto.ResultBean;
 import com.wormchaos.dao.entity.Cloth;
+import com.wormchaos.dao.entity.ItemEntity;
 import com.wormchaos.dao.entity.User;
 import com.wormchaos.service.base.ClothService;
 import com.wormchaos.service.base.WardrobeService;
@@ -10,8 +13,10 @@ import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -32,13 +37,27 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("cloth")
-public class ClothController {
+public class ClothController extends BaseController {
 
     @Autowired
     ClothService clothService;
 
     @Autowired
     WardrobeService wardrobeService;
+
+    @RequestMapping("main")
+    public ModelAndView main(HttpServletRequest request, HttpServletResponse response,
+                             @RequestParam(required = false, value = "pageIndex", defaultValue = "1") Integer pageIndex,
+                             @RequestParam(required = false, value = "pageSize", defaultValue = "10") Integer pageSize,
+                             @RequestParam(required = false, value = "type", defaultValue = "1") Integer type ) throws IOException, BiffException {
+        ModelAndView model = new ModelAndView("decoration");
+        User user = getUserWithOutException(request);
+        if(null != user) {
+            model.addObject("username", user.getUsername());
+        }
+        model.addObject("action", "0");
+        return model;
+    }
 
     /**
      * 上传主页
@@ -52,6 +71,33 @@ public class ClothController {
     public ModelAndView uploadPage(HttpServletRequest request, HttpServletResponse response) throws IOException, BiffException {
         ModelAndView model = new ModelAndView("upload_page");
         return model;
+    }
+
+    @RequestMapping("ajax/getClothList")
+    @ResponseBody
+    public ResultBean getClothList(HttpServletRequest request, HttpServletResponse response,
+                                            @RequestParam(required = false, value = "pageIndex", defaultValue = "1") Integer pageIndex,
+                                            @RequestParam(required = false, value = "pageSize", defaultValue = "10") Integer pageSize,
+                                            @RequestParam(required = false, value = "type", defaultValue = "1") Integer type,
+                                            @RequestParam(required = false, value = "action") Integer action ) throws IOException, BiffException {
+        User user = null;
+        if(action > 0) {
+            user = getUser(request);
+        }
+        List<DecorationDto> decorationDtoList = null;
+        if(null == action || 0 ==action) {
+            List<Cloth> clothList = clothService.findCloths(type, pageIndex, pageSize);
+            decorationDtoList = covertFromCloth(clothList);
+        } else if(1 == action) {
+            List<Cloth> clothList = wardrobeService.findMyClothes(user.getId(), type, pageIndex, pageSize);
+            decorationDtoList = covertFromCloth(clothList);
+        } else if(2 == action) {
+            List<Cloth> clothList = clothService.findUnSelectCloths(user.getId(), type, pageIndex, pageSize);
+            decorationDtoList = covertFromCloth(clothList);
+        }
+        ResultBean resultBean = new ResultBean();
+        resultBean.setContent(decorationDtoList);
+        return resultBean;
     }
 
     /**
@@ -206,4 +252,26 @@ public class ClothController {
         return DecorationConstant.levelToValMapping.get(contents);
     }
 
+    private List<DecorationDto> covertFromItem(List<ItemEntity> itemEntityList) {
+        List<DecorationDto> list = new ArrayList<DecorationDto>();
+        if (!CollectionUtils.isEmpty(list)) {
+            for (ItemEntity item : itemEntityList) {
+                DecorationDto dto = new DecorationDto();
+                BeanUtils.copyProperties(item, dto);
+                dto.setJianyue(DecorationConstant.levelMapping.get(item.getJianyue()));
+                dto.setHuali(DecorationConstant.levelMapping.get(item.getHuali()));
+                dto.setYouya(DecorationConstant.levelMapping.get(item.getYouya()));
+                dto.setHuopo(DecorationConstant.levelMapping.get(item.getHuopo()));
+                dto.setChengshu(DecorationConstant.levelMapping.get(item.getChengshu()));
+                dto.setKeai(DecorationConstant.levelMapping.get(item.getKeai()));
+                dto.setXinggan(DecorationConstant.levelMapping.get(item.getXinggan()));
+                dto.setQingchun(DecorationConstant.levelMapping.get(item.getQingchun()));
+                dto.setQingliang(DecorationConstant.levelMapping.get(item.getQingliang()));
+                dto.setBaonuan(DecorationConstant.levelMapping.get(item.getBaonuan()));
+                dto.setType(DecorationConstant.typeMapping.get(item.getType()));
+                list.add(dto);
+            }
+        }
+        return list;
+    }
 }

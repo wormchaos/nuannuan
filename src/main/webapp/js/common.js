@@ -57,6 +57,19 @@ $(document).ready(function() {
         $(".result").hide();
         $("#loginForm").submit();
     });
+    $("#loginDiv input[type=button]").live("click", function(){
+        var username = $("#username").val();
+        var password = $("#password").val();
+        if (username == "") {
+            $(".error").html("请输入账号");
+            return;
+        }
+        if (password == "") {
+            $(".error").html("请输入密码");
+            return;
+        }
+        ajaxLogin(username, password);
+    });
 
     $("#register_change").live("click", function(){
         $("#loginForm #passwordConfirm").show();
@@ -77,7 +90,7 @@ $(document).ready(function() {
 
 //获取数据
 function getClothList(action, type, pageIndex, pageSize) {
-    var url = project_name + "/decoration/ajax/getClothList"
+    var url = project_name + "/cloth/ajax/getClothList"
     $.ajax({
         type: "POST",
         url: url,
@@ -90,28 +103,34 @@ function getClothList(action, type, pageIndex, pageSize) {
             pageSize : pageSize
         },
         success: function (result) {
+            $(".error").html('');
             $("#item_table tr.item_content").remove();
             $("#item_table tr").eq(0).attr("type", type);
-            for (var i = 0; i < result.length; i++) {
-                var content = "<tr class='item_content' cId = '" + result[i].id + "'>";
-                content += "<td>" + result[i].type + "</td>";
-                content += "<td>" + result[i].name + "</td>";
-                content += "<td>" + result[i].num + "</td>";
-                content += "<td>" + result[i].level + "</td>";
-                content += "<td>" + result[i].huali + "</td>";
-                content += "<td>" + result[i].jianyue + "</td>";
-                content += "<td>" + result[i].youya + "</td>";
-                content += "<td>" + result[i].huopo + "</td>";
-                content += "<td>" + result[i].chengshu + "</td>";
-                content += "<td>" + result[i].keai + "</td>";
-                content += "<td>" + result[i].xinggan + "</td>";
-                content += "<td>" + result[i].qingchun + "</td>";
-                content += "<td>" + result[i].qingliang + "</td>";
-                content += "<td>" + result[i].baonuan + "</td>";
-                content += "<td>" + result[i].label1 + "</td>";
-                content += "<td>" + result[i].label2 + "</td>";
-                content += "<td>" + result[i].getfrom + "</td></tr>";
-                $("#item_table tr").eq(i).after(content);
+            if(result.code == 0) {
+                var cloth = result.content;
+                for (var i = 0; i < cloth.length; i++) {
+                    var content = "<tr class='item_content' cId = '" + cloth[i].id + "'>";
+                    content += "<td>" + cloth[i].name + "</td>";
+                    content += "<td>" + cloth[i].type + "</td>";
+                    content += "<td>" + cloth[i].num + "</td>";
+                    content += "<td>" + cloth[i].level + "</td>";
+                    content += "<td>" + cloth[i].huali + "</td>";
+                    content += "<td>" + cloth[i].jianyue + "</td>";
+                    content += "<td>" + cloth[i].youya + "</td>";
+                    content += "<td>" + cloth[i].huopo + "</td>";
+                    content += "<td>" + cloth[i].chengshu + "</td>";
+                    content += "<td>" + cloth[i].keai + "</td>";
+                    content += "<td>" + cloth[i].xinggan + "</td>";
+                    content += "<td>" + cloth[i].qingchun + "</td>";
+                    content += "<td>" + cloth[i].qingliang + "</td>";
+                    content += "<td>" + cloth[i].baonuan + "</td>";
+                    content += "<td>" + cloth[i].label1 + "</td>";
+                    content += "<td>" + cloth[i].label2 + "</td>";
+                    content += "<td>" + cloth[i].getfrom + "</td></tr>";
+                    $("#item_table tr").eq(i).after(content);
+                }
+            } else {
+                $(".error").html(result.desc);
             }
         },
         error: function (a, b, c) {
@@ -120,7 +139,7 @@ function getClothList(action, type, pageIndex, pageSize) {
     });
 }
 
-//获取数据
+//添加衣服
 function addToMyWardrobe(cId) {
     var url = project_name + "/decoration/ajax/addCloth"
     $.ajax({
@@ -132,8 +151,10 @@ function addToMyWardrobe(cId) {
             clothId:cId
         },
         success: function (result) {
-            if(result.success == "1") {
-                $("tr.item_content[cId='"+ cId +"']").css({ "color": "#ff0011", "background": "blue" });
+            if(result.code == 0) {
+                if(result.content = "success") {
+                    $("tr.item_content[cId='"+ cId +"']").css({ "color": "#ff0011", "background": "blue" });
+                }
             }
         },
         error: function (a, b, c) {
@@ -168,27 +189,33 @@ function getDecorationList() {
             cool: cool
         },
         success: function (result) {
+            $(".error").html('');
             $("#item_table tr.item_content").remove();
-            for (var i = 0; i < result.length; i++) {
-                var content = "<tr class='item_content' cId = '" + result[i].id + "'>";
-                content += "<td>" + result[i].type + "</td>";
-                content += "<td>" + result[i].name + "</td>";
-                content += "<td>" + result[i].num + "</td>";
-                content += "<td>" + result[i].level + "</td>";
-                content += "<td>" + result[i].huali + "</td>";
-                content += "<td>" + result[i].jianyue + "</td>";
-                content += "<td>" + result[i].youya + "</td>";
-                content += "<td>" + result[i].huopo + "</td>";
-                content += "<td>" + result[i].chengshu + "</td>";
-                content += "<td>" + result[i].keai + "</td>";
-                content += "<td>" + result[i].xinggan + "</td>";
-                content += "<td>" + result[i].qingchun + "</td>";
-                content += "<td>" + result[i].qingliang + "</td>";
-                content += "<td>" + result[i].baonuan + "</td>";
-                content += "<td>" + result[i].label1 + "</td>";
-                content += "<td>" + result[i].label2 + "</td>";
-                content += "<td>" + result[i].getfrom + "</td></tr>";
-                $("#item_table tr").eq(i).after(content);
+            if(result.code == 0) {
+                var cloth = result.content;
+                for (var i = 0; i < cloth.length; i++) {
+                    var content = "<tr class='item_content' cId = '" + cloth[i].id + "'>";
+                    content += "<td>" + cloth[i].type + "</td>";
+                    content += "<td>" + cloth[i].name + "</td>";
+                    content += "<td>" + cloth[i].num + "</td>";
+                    content += "<td>" + cloth[i].level + "</td>";
+                    content += "<td>" + cloth[i].huali + "</td>";
+                    content += "<td>" + cloth[i].jianyue + "</td>";
+                    content += "<td>" + cloth[i].youya + "</td>";
+                    content += "<td>" + cloth[i].huopo + "</td>";
+                    content += "<td>" + cloth[i].chengshu + "</td>";
+                    content += "<td>" + cloth[i].keai + "</td>";
+                    content += "<td>" + cloth[i].xinggan + "</td>";
+                    content += "<td>" + cloth[i].qingchun + "</td>";
+                    content += "<td>" + cloth[i].qingliang + "</td>";
+                    content += "<td>" + cloth[i].baonuan + "</td>";
+                    content += "<td>" + cloth[i].label1 + "</td>";
+                    content += "<td>" + cloth[i].label2 + "</td>";
+                    content += "<td>" + cloth[i].getfrom + "</td></tr>";
+                    $("#item_table tr").eq(i).after(content);
+                }
+            } else {
+                $(".error").html(result.desc);
             }
         },
         error: function (a, b, c) {
@@ -197,6 +224,30 @@ function getDecorationList() {
     });
 }
 
+//登录
+function ajaxLogin(username, password) {
+    var url = project_name + "/user/ajax/login"
+    $.ajax({
+        type: "POST",
+        url: url,
+        contentType :  "application/x-www-form-urlencoded",
+        dataType:"json",
+        data: {
+            username: username,
+            password: password
+        },
+        success: function (result) {
+            if(result.code == 0) {
+                $("#loginDiv").html("用户:" + result.content);
+            } else {
+                $(".error").html(result.desc);
+            }
+        },
+        error: function (a, b, c) {
+            console.log("error");
+        }
+    });
+}
 function uploadData(){
     $.ajaxFileUpload({
         url: project_name + "/cloth/ajax/uploadData",            //需要链接到服务器地址

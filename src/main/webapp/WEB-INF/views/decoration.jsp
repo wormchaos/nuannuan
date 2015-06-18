@@ -27,15 +27,18 @@
         <li type="7"><a href="javascript:void(0);">鞋子</a></li>
         <li type="8"><a href="javascript:void(0);">饰品</a></li>
         <li type="9"><a href="javascript:void(0);">妆容</a></li>
-        <label><input class="allCloth" name="allCloth" type="radio" value="0" checked="checked" />全部</label>
-        <label><input class="allCloth" name="allCloth" type="radio" value="1" />自己衣柜</label>
-        <label><input class="allCloth" name="allCloth" type="radio" value="2" />没加入衣柜</label>
     </ul>
 </div>
-<div>
+<div class="menu">
+    <label><input class="allCloth" name="allCloth" type="radio" value="0" checked="checked" />全部</label>
+    <label><input class="allCloth" name="allCloth" type="radio" value="1" />自己衣柜</label>
+    <label><input class="allCloth" name="allCloth" type="radio" value="2" />没加入衣柜</label>
+</div>
+<div class="content">
     <table id="item_table">
         <tr type = "1">
             <th>名称</th>
+            <th>类型</th>
             <th>No.</th>
             <th>心级</th>
             <th>华丽</th>
@@ -72,40 +75,13 @@
             <td>-</td>
         </tr>
     </table>
+    <div class="error"></div>
     <div id="pageUp_menu">
         <span class="preview">上一页</span>
         <span class="pageIndex">1</span>
         <span class="nextview">下一页</span>
     </div>
 </div>
-<!--
-<select>
-    <option  value="">发型</option>
-</select>
-<select>
-    <option  value="">连衣裙</option>
-</select>
-<select>
-    <option  value="">外套</option>
-</select>
-<select>
-    <option  value="">上衣</option>
-</select>
-<select>
-    <option  value="">下装</option>
-</select>
-<select>
-    <option  value="">袜子</option>
-</select>
-<select>
-    <option  value="">鞋子</option>
-</select>
-<select>
-    <option  value="">饰品</option>
-</select>
-<select>
-    <option  value="">妆容</option>
-</select>
--->
+<jsp:include page="base.jsp" />
 </body>
 </html>

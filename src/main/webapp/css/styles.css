@@ -59,3 +59,10 @@ ul.menu li a:active
     color: #cfdbe6; /* 文字颜色 */
     text-decoration: none; /* 不显示超链接下划线 */
 }
+div {
+    float:left;
+}
+.error{
+    color: red;
+    border: solid 1px red ;
+}

@@ -26,7 +26,7 @@ public interface ClothService {
      * @param label2
      * @return
      */
-    List<Cloth> calculateDecoration(int briefFlg, int eleganceFlg, int lovelyFlg, int pureFlg, int coolFlg, String label1, String label2);
+    List<Cloth> calculateDecoration(Integer userId, int briefFlg, int eleganceFlg, int lovelyFlg, int pureFlg, int coolFlg, String label1, String label2);
 
     Cloth findClothsByNameNum(String name, Integer num, Integer type);
 
